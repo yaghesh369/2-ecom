@@ -5,11 +5,19 @@ from .models import Category , Product
 
 
 @api_view(['GET'])
-def getproduct(request):
+def getproducts(request):
     products = Product.objects.all()
     serializer = ProductSerializer(products , many=True)
     return Response(serializer.data)
    
+@api_view(['GET'])
+def getproduct(request , pk):
+    try: 
+        products=Product.objects.get(pk=pk)
+        serializer = ProductSerializer(products , context={'request': request})
+        return Response(serializer.data)
+    except Product.DoesNotExist:
+        return Response({"error": "Product not found"},status=404)
 
 @api_view(['GET'])
 def getcategory(request):
